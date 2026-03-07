@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/config.py
+# hypothesis_version: 6.151.9
+
+[3600, 8000, '.env', 'DraftBridge API', 'development', 'draftbridge-designs', 'ignore', 'info', 'us-east-1']

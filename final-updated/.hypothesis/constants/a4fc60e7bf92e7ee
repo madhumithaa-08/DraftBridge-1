@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/routers/chat.py
+# hypothesis_version: 6.151.9
+
+['/api/chat', 'analysis_data', 'chat', 'descriptive_summary']

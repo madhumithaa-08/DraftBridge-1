@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/agents/base_agent.py
+# hypothesis_version: 6.151.9
+
+[1.0, 'Bedrock', 'Code', 'Error', 'ThrottlingException', 'application/json', 'body', 'invocationArn', 'invoke_model', 's3OutputDataConfig', 's3Uri', 'start_async_invoke']

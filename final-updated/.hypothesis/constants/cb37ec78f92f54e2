@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/routers/renders.py
+# hypothesis_version: 6.151.9
+
+['/api/renders', '/{render_id}', ':sk', 'Items', 'SK = :sk', 'analysis_data', 'created_at', 'design_id', 'prompt_used', 'render_id', 'renders', 's3_key']

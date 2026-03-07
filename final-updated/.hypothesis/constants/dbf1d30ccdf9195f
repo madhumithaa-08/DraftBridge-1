@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/services/storage_service.py
+# hypothesis_version: 6.151.9
+
+[3600, '.', 'Body', 'Bucket', 'Key', 'S3', 'bin', 'delete_object', 'get_object', 'put_object']

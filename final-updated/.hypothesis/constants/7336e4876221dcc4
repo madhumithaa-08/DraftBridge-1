@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/routers/exports.py
+# hypothesis_version: 6.151.9
+
+['/api/exports', '/{export_id}', ':sk', 'Items', 'SK = :sk', 'analysis_data', 'complete', 'created_at', 'design_id', 'export_id', 'exports', 'format', 's3_key', 'status']

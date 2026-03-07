@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/dependencies.py
+# hypothesis_version: 6.151.9
+
+['bedrock-runtime', 'dynamodb', 's3']

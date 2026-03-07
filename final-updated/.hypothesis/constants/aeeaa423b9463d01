@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/agents/compliance_agent.py
+# hypothesis_version: 6.151.9
+
+[0.3, 0.9, 4096, ', ', '; ', 'No rooms identified', '```', 'ada', 'ada_compliant', 'building_code', 'checked_codes', 'code_category', 'compliance_score', 'content', 'description', 'dimensions', 'efficiency_score', 'elements', 'energy', 'findings', 'inferenceConfig', 'issues', 'json', 'location', 'maxTokens', 'medium', 'message', 'messages', 'messages-v1', 'output', 'overall_pass', 'recommendations', 'remediation', 'role', 'rooms', 'schemaVersion', 'severity', 'system', 'temperature', 'text', 'topP', 'type', 'unknown', 'user', 'violations']

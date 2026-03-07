@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/agents/chat_agent.py
+# hypothesis_version: 6.151.9
+
+[0.3, 0.5, 0.9, 150, 380, 512, '; ', 'Bedrock', 'Code', 'Error', 'ThrottlingException', '[READY_TO_RENDER]', 'architectural space', 'assistant', 'content', 'converse', 'create the render', 'created_at', 'design_id', 'generate it', 'generate the final', 'generate the render', "let's generate", 'looks good generate', 'looks good, generate', 'make the render', 'maxTokens', 'message', 'message_id', 'output', 'ready to generate', 'render it', 'role', 'temperature', 'text', 'topP', 'user']

@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/routers/sketches.py
+# hypothesis_version: 6.151.9
+
+['/api/sketches', '/{sketch_id}', 'JPEG', 'PNG', 'WEBP', 'analysis_data', 'complete', 'image/jpeg', 'image/png', 'image/webp', 'json', 'sketch.png', 'sketches', 'sketches/', 'status']

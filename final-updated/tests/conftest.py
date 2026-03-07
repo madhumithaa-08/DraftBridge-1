@@ -103,14 +103,24 @@ async def test_client(aws_credentials, monkeypatch):
         # Import app and override dependencies
         from app.dependencies import (
             get_bedrock_client,
+            get_database_service,
             get_dynamodb_resource,
             get_s3_client,
+            get_storage_service,
         )
         from app.main import app
+        from app.services.database_service import DatabaseService
+        from app.services.storage_service import StorageService
 
+        # Override low-level clients
         app.dependency_overrides[get_s3_client] = lambda: s3
         app.dependency_overrides[get_dynamodb_resource] = lambda: dynamodb
         app.dependency_overrides[get_bedrock_client] = lambda: bedrock
+
+        # Override services directly so they use the mocked table/bucket names
+        # (settings.dynamodb_table_name may differ from "test-designs")
+        app.dependency_overrides[get_database_service] = lambda: DatabaseService(dynamodb, "test-designs")
+        app.dependency_overrides[get_storage_service] = lambda: StorageService(s3, "test-bucket")
 
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:

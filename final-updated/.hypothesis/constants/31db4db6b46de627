@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/routers/videos.py
+# hypothesis_version: 6.151.9
+
+[202, '/api/videos', '/{video_id}', ':sk', 'Items', 'RENDER#', 'SK = :sk', 'analysis_data', 'created_at', 'design_id', 'invocation_arn', 'json', 'processing', 'prompt_used', 'refined', 's3_key', 'status', 'style', 'video_id', 'video_url', 'videos']

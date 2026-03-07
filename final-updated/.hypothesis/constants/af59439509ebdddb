@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/routers/health.py
+# hypothesis_version: 6.151.9
+
+['/api', '/health', 'bedrock', 'degraded', 'dynamodb', 'error', 'health', 'healthy', 'ok', 's3', 'services', 'status']

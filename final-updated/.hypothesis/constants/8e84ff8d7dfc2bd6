@@ -1,0 +1,4 @@
+# file: /Users/madhumithaa/DraftBridge/project/final-updated/app/agents/sketch_agent.py
+# hypothesis_version: 6.151.9
+
+[0.3, 0.7, 0.9, 80.0, 1024, 2048, 4096, 'Unknown', '```', 'area', 'bytes', 'confidence', 'content', 'dimensions', 'elements', 'format', 'from', 'gif', 'height', 'image', 'image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'inferenceConfig', 'jpeg', 'label', 'left', 'maxTokens', 'message', 'messages', 'messages-v1', 'name', 'output', 'png', 'position', 'relationship', 'role', 'rooms', 'schemaVersion', 'source', 'system', 'temperature', 'text', 'to', 'top', 'topP', 'type', 'unknown', 'user', 'utf-8', 'webp', 'width']
