@@ -25,13 +25,15 @@ async def create_render(
     """Generate a photorealistic render for a design."""
     design = db.get_design(request.design_id)
 
+    if request.refined_prompt:
+        return viz_agent.generate_refined_render(request.refined_prompt, request.design_id)
+
     analysis_data = design.get("analysis_data")
     if not analysis_data or not isinstance(analysis_data, dict):
         raise DesignNotFoundError(request.design_id)
     analysis = SketchAnalysis(**analysis_data)
 
-    render_response = viz_agent.generate_render(analysis, request)
-    return render_response
+    return viz_agent.generate_render(analysis, request)
 
 
 @router.get("/{render_id}", response_model=RenderResponse)

@@ -9,6 +9,9 @@ class SketchUploadResponse(BaseModel):
     status: str  # "analyzing", "complete", "failed"
     s3_key: str
     uploaded_at: datetime
+    descriptive_summary: str = ""
+    rooms: list["Room"] = []
+    architectural_elements: list["ArchitecturalElement"] = []
 
 
 class TextBlock(BaseModel):
@@ -38,4 +41,5 @@ class SketchAnalysis(BaseModel):
     text_annotations: list[TextBlock]
     spatial_relationships: list[dict[str, str]]
     raw_dimensions: dict[str, Any] = {}
+    descriptive_summary: str = ""
     analyzed_at: datetime

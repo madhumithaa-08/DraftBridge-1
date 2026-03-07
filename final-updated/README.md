@@ -94,11 +94,9 @@ aws dynamodb create-table \
 
 Enable access to the following models in the AWS Bedrock console:
 
-- **Anthropic Claude 3 Sonnet** (`anthropic.claude-3-sonnet-20240229-v1:0`) — Sketch analysis and compliance checking
+- **Amazon Nova Lite** (`amazon.nova-lite-v1:0`) — Sketch analysis (vision), compliance checking, and chat refinement
 - **Amazon Nova Canvas** (`amazon.nova-canvas-v1:0`) — Photorealistic render generation
 - **Amazon Nova Reel** (`amazon.nova-reel-v1:0`) — Walkthrough video generation
-
-Amazon Textract is also used for extracting text annotations from sketches (no model access setup required).
 
 ## API Endpoints
 
@@ -118,6 +116,8 @@ Amazon Textract is also used for extracting text annotations from sketches (no m
 | `GET` | `/api/versions/{design_id}` | Get version history |
 | `GET` | `/api/versions/{design_id}/{version}` | Get specific version |
 | `POST` | `/api/versions/{design_id}/compare` | Compare two versions |
+| `POST` | `/api/chat/{design_id}/messages` | Send a chat message for design refinement |
+| `GET` | `/api/chat/{design_id}/messages` | Get chat history for a design |
 | `GET` | `/api/health` | Health check |
 
 ## Project Structure
@@ -130,9 +130,10 @@ draftbridge-v2/
 │   ├── dependencies.py       # AWS client dependency injection
 │   ├── agents/
 │   │   ├── base_agent.py     # Shared Bedrock invocation logic
-│   │   ├── sketch_agent.py   # Sketch analysis (Textract + Bedrock)
+│   │   ├── sketch_agent.py   # Sketch analysis (Nova Lite vision)
 │   │   ├── visualization_agent.py  # Renders (Nova Canvas) + Videos (Nova Reel)
 │   │   ├── compliance_agent.py     # Building code, ADA, energy analysis
+│   │   ├── chat_agent.py     # Design refinement chat (Nova Lite)
 │   │   └── export_agent.py   # CAD/BIM file generation
 │   ├── services/
 │   │   ├── storage_service.py       # S3 operations
@@ -145,6 +146,7 @@ draftbridge-v2/
 │   │   ├── compliance.py     # POST /api/compliance/*
 │   │   ├── exports.py        # POST/GET /api/exports
 │   │   ├── versions.py       # GET/POST /api/versions
+│   │   ├── chat.py           # POST/GET /api/chat
 │   │   └── health.py         # GET /api/health
 │   ├── models/               # Pydantic request/response models
 │   └── utils/

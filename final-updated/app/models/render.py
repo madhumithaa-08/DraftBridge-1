@@ -8,6 +8,7 @@ class RenderRequest(BaseModel):
     materials: dict[str, str] | None = None
     lighting: str = "natural"
     resolution: str = "1024x1024"
+    refined_prompt: str | None = None
 
 
 class RenderResponse(BaseModel):

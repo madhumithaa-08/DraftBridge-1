@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.routers import sketches, renders, videos, compliance, exports, versions, health
+from app.routers import sketches, renders, videos, compliance, exports, versions, health, chat
 from app.utils.errors import DraftBridgeError
 from app.utils.logging import get_logger
 
@@ -125,3 +125,4 @@ app.include_router(compliance.router)
 app.include_router(exports.router)
 app.include_router(versions.router)
 app.include_router(health.router)
+app.include_router(chat.router)

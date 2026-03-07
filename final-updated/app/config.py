@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     dynamodb_table_name: str = "draftbridge-designs"
 
     # Bedrock Model IDs
-    bedrock_text_model: str = "us.amazon.nova-premier-v1:0"
+    bedrock_text_model: str = "amazon.nova-lite-v1:0"
     bedrock_image_model: str = "amazon.nova-canvas-v1:0"
     bedrock_video_model: str = "amazon.nova-reel-v1:0"
 

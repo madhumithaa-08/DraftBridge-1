@@ -9,7 +9,7 @@ class ExportRequest(BaseModel):
     @field_validator("format")
     @classmethod
     def validate_format(cls, v: str) -> str:
-        allowed = {"DWG", "DXF", "RVT", "IFC"}
+        allowed = {"DXF", "IFC", "OBJ"}
         if v.upper() not in allowed:
             raise ValueError(f"Unsupported format: {v}. Supported: {allowed}")
         return v.upper()

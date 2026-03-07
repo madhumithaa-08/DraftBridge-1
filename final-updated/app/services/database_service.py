@@ -218,3 +218,31 @@ class DatabaseService:
             logger.error(f"DynamoDB query failed: {e}")
             raise AWSServiceError("DynamoDB", "query", str(e))
         return response.get("Items", [])
+    def save_chat_message(self, design_id: str, message_id: str, role: str, content: str) -> None:
+        """Save a chat message. PK=DESIGN#{design_id}, SK=CHAT#{iso_timestamp}#{message_id}."""
+        now = datetime.now(timezone.utc).isoformat()
+        try:
+            self.table.put_item(Item={
+                "PK": f"DESIGN#{design_id}",
+                "SK": f"CHAT#{now}#{message_id}",
+                "message_id": message_id,
+                "design_id": design_id,
+                "role": role,
+                "content": content,
+                "created_at": now,
+            })
+        except Exception as e:
+            logger.error(f"DynamoDB save_chat_message failed: {e}")
+            raise AWSServiceError("DynamoDB", "put_item", str(e))
+
+    def get_chat_messages(self, design_id: str) -> list[dict[str, Any]]:
+        """Query all CHAT# items under a design, ordered by SK (chronological)."""
+        try:
+            response = self.table.query(
+                KeyConditionExpression=Key("PK").eq(f"DESIGN#{design_id}") & Key("SK").begins_with("CHAT#"),
+            )
+        except Exception as e:
+            logger.error(f"DynamoDB get_chat_messages failed: {e}")
+            raise AWSServiceError("DynamoDB", "query", str(e))
+        return response.get("Items", [])
+

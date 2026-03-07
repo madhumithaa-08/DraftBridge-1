@@ -30,7 +30,16 @@ async def create_video(
         raise DesignNotFoundError(request.design_id)
     analysis = SketchAnalysis(**analysis_data)
 
-    video_response = viz_agent.generate_video(analysis, request.design_id)
+    # Use refined_prompt from request, or try to find the latest refined render prompt
+    refined_prompt = request.refined_prompt
+    if not refined_prompt:
+        refined_prompt = _get_latest_refined_prompt(db, request.design_id)
+
+    logger.info(f"Creating video for design {request.design_id}, refined_prompt={'yes' if refined_prompt else 'no'}")
+    if refined_prompt:
+        logger.info(f"Refined prompt preview: {refined_prompt[:150]}...")
+
+    video_response = viz_agent.generate_video(analysis, request.design_id, refined_prompt)
     return JSONResponse(
         status_code=202,
         content=video_response.model_dump(mode="json"),
@@ -81,3 +90,20 @@ def _find_video_by_id(db: DatabaseService, video_id: str) -> list[dict]:
         return response.get("Items", [])
     except Exception:
         return []
+
+
+def _get_latest_refined_prompt(db: DatabaseService, design_id: str) -> str | None:
+    """Find the latest refined render prompt for a design.
+
+    Queries all RENDER# items and returns the prompt_used from the most recent
+    one with style='refined', which indicates it came from chat refinement.
+    """
+    try:
+        items = db.get_item_by_sk_prefix(design_id, "RENDER#")
+        refined = [i for i in items if i.get("style") == "refined"]
+        if not refined:
+            return None
+        latest = max(refined, key=lambda x: x.get("created_at", ""))
+        return latest.get("prompt_used")
+    except Exception:
+        return None

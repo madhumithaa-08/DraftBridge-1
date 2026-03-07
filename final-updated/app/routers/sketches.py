@@ -47,6 +47,9 @@ async def upload_sketch(
         status="complete",
         s3_key=s3_key,
         uploaded_at=datetime.now(timezone.utc),
+        descriptive_summary=analysis.descriptive_summary,
+        rooms=analysis.rooms,
+        architectural_elements=analysis.architectural_elements,
     )
 
 

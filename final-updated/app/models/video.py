@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class VideoRequest(BaseModel):
     design_id: str
     camera_path: str = "walkthrough"
+    refined_prompt: str | None = None
 
 
 class VideoResponse(BaseModel):

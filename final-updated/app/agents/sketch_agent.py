@@ -14,6 +14,32 @@ from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
+
+def _safe_float(value) -> float | None:
+    """Convert a value to float, returning None if it's not a valid number."""
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _clean_numeric_dict(d) -> dict[str, float] | None:
+    """Sanitize a dict so all values are floats. Drops None/non-numeric entries.
+
+    Returns None if the input isn't a dict or has no valid numeric entries.
+    """
+    if not isinstance(d, dict):
+        return None
+    cleaned = {}
+    for k, v in d.items():
+        f = _safe_float(v)
+        if f is not None:
+            cleaned[k] = f
+    return cleaned if cleaned else None
+
+
 TEXT_EXTRACTION_PROMPT = """Look at this architectural sketch image and extract ALL text annotations, labels, measurements, and notes written on it.
 
 Return a JSON array of objects, each with:
@@ -60,7 +86,7 @@ class SketchAgent(BaseAgent):
 
         analysis = self.analyze_architecture(image_bytes, text_blocks, media_type)
 
-        return SketchAnalysis(
+        result = SketchAnalysis(
             design_id=design_id,
             rooms=analysis.get("rooms", []),
             architectural_elements=analysis.get("architectural_elements", []),
@@ -68,6 +94,15 @@ class SketchAgent(BaseAgent):
             spatial_relationships=analysis.get("spatial_relationships", []),
             analyzed_at=datetime.now(timezone.utc),
         )
+
+        try:
+            result.descriptive_summary = self._generate_descriptive_summary(result)
+        except Exception as e:
+            logger.warning(f"Failed to set descriptive summary: {e}")
+            result.descriptive_summary = ""
+
+        return result
+
 
     def _build_nova_image_body(self, image_bytes: bytes, media_type: str, prompt: str, system_text: str, max_tokens: int = 2048) -> dict:
         """Build a Nova-format request body with an image and text prompt."""
@@ -166,8 +201,8 @@ class SketchAgent(BaseAgent):
                     room_elements.append(ArchitecturalElement(
                         type=e.get("type", "unknown"),
                         label=e.get("label", ""),
-                        dimensions=e.get("dimensions") if isinstance(e.get("dimensions"), dict) else None,
-                        position=e.get("position") if isinstance(e.get("position"), dict) else None,
+                        dimensions=_clean_numeric_dict(e.get("dimensions")),
+                        position=_clean_numeric_dict(e.get("position")),
                     ))
                 elif isinstance(e, str):
                     room_elements.append(ArchitecturalElement(type="unknown", label=e))
@@ -175,8 +210,8 @@ class SketchAgent(BaseAgent):
                     logger.warning(f"Skipping unexpected element type: {type(e)}")
             rooms.append(Room(
                 name=r.get("name", "Unknown"),
-                area=r.get("area"),
-                dimensions=r.get("dimensions") if isinstance(r.get("dimensions"), dict) else None,
+                area=_safe_float(r.get("area")),
+                dimensions=_clean_numeric_dict(r.get("dimensions")),
                 elements=room_elements,
             ))
 
@@ -186,8 +221,8 @@ class SketchAgent(BaseAgent):
                 elements.append(ArchitecturalElement(
                     type=e.get("type", "unknown"),
                     label=e.get("label", ""),
-                    dimensions=e.get("dimensions") if isinstance(e.get("dimensions"), dict) else None,
-                    position=e.get("position") if isinstance(e.get("position"), dict) else None,
+                    dimensions=_clean_numeric_dict(e.get("dimensions")),
+                    position=_clean_numeric_dict(e.get("position")),
                 ))
             elif isinstance(e, str):
                 elements.append(ArchitecturalElement(type="unknown", label=e))
@@ -210,6 +245,45 @@ class SketchAgent(BaseAgent):
             "architectural_elements": elements,
             "spatial_relationships": relationships,
         }
+
+    def _generate_descriptive_summary(self, analysis: SketchAnalysis) -> str:
+        """Generate a human-readable summary from structured analysis data.
+
+        Calls Nova Lite with a text-only prompt referencing rooms, elements,
+        materials, and spatial relationships. Returns empty string on any failure.
+        """
+        try:
+            room_names = [r.name for r in analysis.rooms]
+            element_types = list({e.type for e in analysis.architectural_elements})
+            relationships = [
+                f"{rel.get('from', '')} {rel.get('relationship', '')} {rel.get('to', '')}"
+                for rel in analysis.spatial_relationships
+            ]
+
+            prompt_parts = ["Describe this architectural design in a single detailed paragraph."]
+            if room_names:
+                prompt_parts.append(f"Rooms detected: {', '.join(room_names)}.")
+            if element_types:
+                prompt_parts.append(f"Key architectural elements: {', '.join(element_types)}.")
+            if relationships:
+                prompt_parts.append(f"Spatial relationships: {'; '.join(relationships)}.")
+
+            prompt = " ".join(prompt_parts)
+
+            body = {
+                "schemaVersion": "messages-v1",
+                "system": [{"text": "You are an expert architect. Produce a concise, human-readable paragraph summarizing the architectural design based on the provided details."}],
+                "messages": [{"role": "user", "content": [{"text": prompt}]}],
+                "inferenceConfig": {"maxTokens": 1024, "temperature": 0.7, "topP": 0.9},
+            }
+
+            response = self.invoke_bedrock(settings.bedrock_text_model, body)
+            summary = self._extract_nova_text(response)
+            return summary if summary else ""
+        except Exception as e:
+            logger.warning(f"Failed to generate descriptive summary: {e}")
+            return ""
+
 
     @staticmethod
     def _extract_nova_text(response: dict) -> str:

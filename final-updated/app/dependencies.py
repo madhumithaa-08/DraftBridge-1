@@ -8,6 +8,7 @@ from app.agents.sketch_agent import SketchAgent
 from app.agents.visualization_agent import VisualizationAgent
 from app.agents.compliance_agent import ComplianceAgent
 from app.agents.export_agent import ExportAgent
+from app.agents.chat_agent import ChatAgent
 from app.services.storage_service import StorageService
 from app.services.database_service import DatabaseService
 from app.services.version_control_service import VersionControlService
@@ -74,3 +75,11 @@ def get_export_agent(
     db=Depends(get_database_service),
 ) -> ExportAgent:
     return ExportAgent(bedrock, storage, db)
+
+
+def get_chat_agent(
+    bedrock=Depends(get_bedrock_client),
+    storage=Depends(get_storage_service),
+    db=Depends(get_database_service),
+) -> ChatAgent:
+    return ChatAgent(bedrock, storage, db)
